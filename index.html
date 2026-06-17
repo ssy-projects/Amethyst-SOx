@@ -13,8 +13,6 @@
     --bg:#f8f9fb;--surface:#ffffff;--border:#e2e4e8;--text:#1a1a2e;--muted:#6b7280;--light:#f1f3f7;
   }
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-  /* PASSWORD SCREEN */
   #pw-screen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999}
   .pw-box{background:#fff;border-radius:16px;padding:40px 44px;text-align:center;width:340px}
   .pw-logo{font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.08em;margin-bottom:4px}
@@ -25,7 +23,6 @@
   .pw-btn{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.02em}
   .pw-btn:hover{background:#001540}
   .pw-err{font-size:12px;color:var(--red);margin-top:10px;display:none}
-
   header{background:var(--navy);color:#fff;padding:18px 32px;display:flex;justify-content:space-between;align-items:center}
   header h1{font-size:16px;font-weight:600;letter-spacing:.01em}
   header .sub{font-size:12px;opacity:.65;margin-top:2px}
@@ -97,7 +94,6 @@
 </head>
 <body>
 
-<!-- PASSWORD SCREEN -->
 <div id="pw-screen">
   <div class="pw-box">
     <div class="pw-logo">SSY PROJECTS</div>
@@ -109,7 +105,6 @@
   </div>
 </div>
 
-<!-- MAIN APP (hidden until password correct) -->
 <div id="app" style="display:none">
 
 <header>
@@ -128,7 +123,6 @@
     <button class="nav-btn" onclick="showPage('chart',this)"><i class="ti ti-chart-line"></i> Analysis charts</button>
   </nav>
 
-  <!-- SUMMARY PAGE -->
   <div id="page-summary" class="page active">
     <div class="kpi-grid" id="kpi-grid"></div>
     <div class="two-col">
@@ -144,7 +138,6 @@
     </div>
   </div>
 
-  <!-- INPUTS PAGE -->
   <div id="page-inputs" class="page">
     <div class="section-label">Charter parameters</div>
     <div class="input-grid">
@@ -192,7 +185,6 @@
     </div>
   </div>
 
-  <!-- CHARTS PAGE -->
   <div id="page-chart" class="page">
     <div class="card">
       <div class="card-title"><i class="ti ti-trending-up"></i> Cumulative scrubber savings vs CapEx</div>
@@ -216,10 +208,9 @@
 
 <footer>SSY Projects &nbsp;·&nbsp; ssyglobal.com &nbsp;·&nbsp; Strictly Confidential &nbsp;·&nbsp; Spread source: ICE MF6 / NYMEX S531, extracted 17 Jun 2026</footer>
 
-</div><!-- end #app -->
+</div>
 
 <script>
-/* PASSWORD */
 function checkPw(){
   const v=document.getElementById('pw-input').value.trim().toUpperCase();
   if(v==='KNSSY'){
@@ -233,7 +224,6 @@ function checkPw(){
   }
 }
 
-/* FFA formatting with thousand separator */
 function fmtFfa(el){
   const raw=el.value.replace(/,/g,'');
   const n=parseInt(raw,10);
@@ -249,53 +239,45 @@ function fmt(n){return '$'+Math.round(n).toLocaleString('en-US')}
 function fmtM(n){return '$'+(n/1000000).toFixed(2)+'M'}
 
 function calc(){
-  const capex = +document.getElementById('sl-capex').value;
-  const cons  = +document.getElementById('sl-cons').value;
-  const util  = +document.getElementById('sl-util').value/100;
-  const pass  = +document.getElementById('sl-pass').value/100;
-  const prem  = +document.getElementById('sl-prem').value/100;
-  const d27   = +document.getElementById('d27').value||355;
-  const d28   = +document.getElementById('d28').value||360;
-  const d29   = +document.getElementById('d29').value||360;
-  const ffa27 = getFfa('ffa27')||27000;
-  const ffa28 = getFfa('ffa28')||23200;
-  const ffa29 = getFfa('ffa29')||21800;
-  const sp27  = +document.getElementById('sp27').value||74.5;
-  const sp28  = +document.getElementById('sp28').value||70.0;
-  const sp29  = +document.getElementById('sp29').value||67.5;
+  const capex=+document.getElementById('sl-capex').value;
+  const cons=+document.getElementById('sl-cons').value;
+  const util=+document.getElementById('sl-util').value/100;
+  const pass=+document.getElementById('sl-pass').value/100;
+  const prem=+document.getElementById('sl-prem').value/100;
+  const d27=+document.getElementById('d27').value||355;
+  const d28=+document.getElementById('d28').value||360;
+  const d29=+document.getElementById('d29').value||360;
+  const ffa27=getFfa('ffa27')||27000;
+  const ffa28=getFfa('ffa28')||23200;
+  const ffa29=getFfa('ffa29')||21800;
+  const sp27=+document.getElementById('sp27').value||74.5;
+  const sp28=+document.getElementById('sp28').value||70.0;
+  const sp29=+document.getElementById('sp29').value||67.5;
 
   const avgFFA=(ffa27+ffa28+ffa29)/3;
   const baseTC=avgFFA*(1+prem);
-
   const spd27=cons*sp27*util*pass;
   const spd28=cons*sp28*util*pass;
   const spd29=cons*sp29*util*pass;
   const avgSpd=(spd27+spd28+spd29)/3;
-
   const th27=(baseTC+spd27)*d27;
   const th28=(baseTC+spd28)*d28;
   const th29=(baseTC+spd29)*d29;
   const totalHire=th27+th28+th29;
-
   const si27=spd27*d27;
   const si28=spd28*d28;
   const si29=spd29*d29;
   const totalScrub=si27+si28+si29;
-
   const bi27=baseTC*d27;
   const bi28=baseTC*d28;
   const bi29=baseTC*d29;
-
   const netBenefit=totalScrub-capex;
-  const annualScrub=totalScrub/3;
-  const payback=capex/annualScrub;
+  const payback=capex/(totalScrub/3);
 
   return{capex,cons,util,pass,prem,d27,d28,d29,
     ffa27,ffa28,ffa29,sp27,sp28,sp29,avgFFA,baseTC,
-    spd27,spd28,spd29,avgSpd,
-    th27,th28,th29,totalHire,
-    si27,si28,si29,totalScrub,
-    bi27,bi28,bi29,netBenefit,payback};
+    spd27,spd28,spd29,avgSpd,th27,th28,th29,totalHire,
+    si27,si28,si29,totalScrub,bi27,bi28,bi29,netBenefit,payback};
 }
 
 function update(){
@@ -309,7 +291,6 @@ function update(){
   const pb=v.payback;
   const pbText=pb<0.5?'< 6 months':pb<1?Math.round(pb*12)+' months':pb.toFixed(1)+' yrs';
   const pnlClass=v.netBenefit>=0?'pnl':'pnl loss';
-  const pnlIcon=v.netBenefit>=0?'trending-up':'trending-down';
 
   document.getElementById('kpi-grid').innerHTML=`
     <div class="kpi payback">
